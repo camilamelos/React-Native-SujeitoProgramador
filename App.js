@@ -7,6 +7,9 @@ import {
   TextInput,
   TouchableOpacity
 } from "react-native";
+
+import { Picker } from "@react-native-picker/picker";
+
 import Slider from "@react-native-community/slider";
 export default class App extends Component {
   constructor(props) {
@@ -15,11 +18,16 @@ export default class App extends Component {
       valor: 300,
       status: false,
       nome: 0,
-      idade: 0
+      idade: 0,
+      genero: 0,
+      sexo: [{ key: 1, nome: "Feminino" }, { key: 2, nome: "Maculino" }]
     };
   }
 
   render() {
+    let generoItem = this.state.sexo.map((v, k) => {
+      return <Picker.Item key={k} value={k} label={v.nome} />;
+    });
     return (
       <View style={styles.container}>
         <View style={styles.viewDados}>
@@ -68,6 +76,15 @@ export default class App extends Component {
             onValueChange={valorIdade => this.setState({ nome: valorIdade })}
           />
 
+          <Picker
+            style={{fontSize: 16, marginLeft: 15}}
+            selectedValue={this.state.genero}
+            onValueChange={(itemValue, itemIndex) =>
+              this.setState({ genero: itemValue })}
+          >
+            {generoItem}
+          </Picker>
+
           <Slider
             style={{ marginTop: 10, width: "100%" }}
             minimumValue={300}
@@ -95,24 +112,38 @@ export default class App extends Component {
                 textAlign: "center",
                 fontSize: 20,
                 width: "90%",
-                marginTop: -38,
+                marginTop: -38
               }}
             >
               É estudadnte? {this.state.status ? "Sim" : "Não"}
             </Text>
           </View>
-          <View style={{justifyContent: 'center'}}>
+          <View style={{ justifyContent: "center" }}>
             <TouchableOpacity
               style={{
                 marginTop: 15,
                 backgroundColor: "#FF7F00",
                 width: "70%",
                 height: "25%",
-                marginLeft: '15%',
+                marginLeft: "15%",
                 borderRadius: 40
               }}
             >
-              <Text style={{fontSize: 15, textAlign: 'center', padding: 10, color: 'white', fontWeight: 'bold'  }}>ABRIR CONTA</Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  textAlign: "center",
+                  padding: 10,
+                  color: "white",
+                  fontWeight: "bold"
+                }}
+                onPress={()=> {
+                  alert('Seu nome: ' + this.state.nome + 'Sua idade é: ' + this.state.valorIdade +
+                  'Gênero: ' + this.state.genero + 'Seu limite é de: ' + this.state.valorSelecionado + this.state.valorSwitch + ', é estudante!')
+                }}
+              >
+                ABRIR CONTA
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
