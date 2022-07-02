@@ -1,151 +1,153 @@
 import React, { Component } from "react";
 import {
-  StyleSheet,
   View,
   Text,
+  StyleSheet,
   Switch,
   TextInput,
   TouchableOpacity
 } from "react-native";
 
+import Slider from "@react-native-community/slider";
 import { Picker } from "@react-native-picker/picker";
 
-import Slider from "@react-native-community/slider";
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      valor: 300,
-      status: false,
-      nome: 0,
-      idade: 0,
-      genero: 0,
-      sexo: [{ key: 1, nome: "Feminino" }, { key: 2, nome: "Maculino" }]
+      nome: "",
+      idade: "",
+      sexo: 0,
+      sexos: [
+        { sexoNome: "Masculino", valor: 1 },
+        { sexoNome: "Feminino", valor: 2 }
+      ],
+      limite: 250,
+      estudante: false
     };
+
+    this.enviarDados = this.enviarDados.bind(this);
+  }
+
+  //Metodo que é chamado quando você clica no botao Abrir Conta
+  enviarDados() {
+    if (this.state.nome === "" || this.state.idade === "") {
+      alert("Preencha todos dados corretamente!");
+      return;
+    }
+
+    alert(
+      "Conta aberta com sucesso!! \n\n" +
+        "Nome: " +
+        this.state.nome +
+        "\n" +
+        "Idade: " +
+        this.state.idade +
+        "\n" +
+        "Sexo: " +
+        this.state.sexos[this.state.sexo].sexoNome +
+        " \n" +
+        "Limite Conta: " +
+        this.state.limite.toFixed(2) +
+        "\n" +
+        "Conta Estudante: " +
+        (this.state.estudante ? "Ativo" : "Inativo")
+    );
   }
 
   render() {
-    let generoItem = this.state.sexo.map((v, k) => {
-      return <Picker.Item key={k} value={k} label={v.nome} />;
+    //Retorna os items do Picker do sexo M ou F
+    let sexoItems = this.state.sexos.map((v, k) => {
+      return <Picker.Item key={k} value={k} label={v.sexoNome} />;
     });
+
     return (
       <View style={styles.container}>
-        <View style={styles.viewDados}>
-          <View
+        <View
+          style={{
+            justifyContent: "center",
+            width: "100%",
+            height: "10%",
+            backgroundColor: "#f0be00"
+          }}
+        >
+          <Text style={styles.bancoLogo}>BANCO REACT</Text>
+
+          <Text
             style={{
-              justifyContent: "center",
-              width: "100%",
-              height: "15%",
-              backgroundColor: "#f0be00"
+              marginTop: -44,
+              textAlign: "center",
+              fontSize: 30,
+              color: "white",
+              fontWeight: "bold"
             }}
           >
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: 30,
-                color: "#FF7F00",
-                fontWeight: "bold"
-              }}
-            >
-              {" "}BANCO REACT
-            </Text>
-            <Text
-              style={{
-                marginTop: -44,
-                textAlign: "center",
-                fontSize: 30,
-                color: "white",
-                fontWeight: "bold"
-              }}
-            >
-              {" "}BANCO REACT
-            </Text>
-          </View>
-
-          <TextInput
-            style={styles.textInput}
-            placeholder="Nome Completo"
-            value={this.state.nome}
-            onValueChange={valorNome => this.setState({ nome: valorNome })}
-          />
-
-          <TextInput
-            style={styles.textInput}
-            placeholder="Idade"
-            value={this.state.idade}
-            onValueChange={valorIdade => this.setState({ nome: valorIdade })}
-          />
-
-          <Picker
-            style={{fontSize: 16, marginLeft: 15}}
-            selectedValue={this.state.genero}
-            onValueChange={(itemValue, itemIndex) =>
-              this.setState({ genero: itemValue })}
-          >
-            {generoItem}
-          </Picker>
-
-          <Slider
-            style={{ marginTop: 10, width: "100%" }}
-            minimumValue={300}
-            maximumValue={1500}
-            onValueChange={valorSelecionado =>
-              this.setState({ valor: valorSelecionado })}
-            value={this.state.valor}
-            minimumTrackTintColor="#759194"
-            maximumTrackTintColor="#0459ba"
-          />
-
-          <Text style={{ textAlign: "center", fontSize: 20 }}>
-            Seu limite será de R$ {this.state.valor.toFixed(2)}
+            {" "}BANCO REACT
           </Text>
-          <View>
-            <Switch
-              style={{ marginiTop: -40 }}
-              value={this.state.status}
-              onValueChange={valorSwitch =>
-                this.setState({ status: valorSwitch })}
-            />
+        </View>
 
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: 20,
-                width: "90%",
-                marginTop: -38
-              }}
+        <View style={styles.areaFormulario}>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu nome"
+            underlineColorAndroid="transparent"
+            onChangeText={texto => this.setState({ nome: texto })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Digite sua idade"
+            underlineColorAndroid="transparent"
+            onChangeText={texto => this.setState({ idade: texto })}
+            keyboardType="numeric" // Deixando teclado apenas numerico
+          />
+
+          <View style={styles.areaSexo}>
+            <Text style={styles.textoNome}>Sexo:</Text>
+            <Picker
+              style={styles.pickerSexo}
+              selectedValue={this.state.sexo}
+              onValueChange={(itemValue, itemIndex) =>
+                this.setState({ sexo: itemValue })}
             >
-              É estudadnte? {this.state.status ? "Sim" : "Não"}
+              {sexoItems}
+            </Picker>
+          </View>
+
+          <View style={styles.limiteArea}>
+            <Text style={styles.textoNome}>Seu Limite:</Text>
+            <Text style={styles.limiteTexto}>
+              R$ {this.state.limite.toFixed(0)}
             </Text>
           </View>
-          <View style={{ justifyContent: "center" }}>
-            <TouchableOpacity
-              style={{
-                marginTop: 15,
-                backgroundColor: "#FF7F00",
-                width: "70%",
-                height: "25%",
-                marginLeft: "15%",
-                borderRadius: 40
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 15,
-                  textAlign: "center",
-                  padding: 10,
-                  color: "white",
-                  fontWeight: "bold"
-                }}
-                onPress={()=> {
-                  alert('Seu nome: ' + this.state.nome + 'Sua idade é: ' + this.state.valorIdade +
-                  'Gênero: ' + this.state.genero + 'Seu limite é de: ' + this.state.valorSelecionado + this.state.valorSwitch + ', é estudante!')
-                }}
-              >
-                ABRIR CONTA
-              </Text>
-            </TouchableOpacity>
+
+          <View style={styles.areaSlider}>
+            <Slider
+              minimumTrackTintColor="#CF0000"
+              minimumValue={250}
+              maximumValue={1500}
+              value={this.state.limite}
+              onValueChange={limite => this.setState({ limite: limite })}
+            />
           </View>
+
+          <View style={styles.areaEstudante}>
+            <Text style={styles.textoNome}>Estudante:</Text>
+            <Switch
+              style={{ paddingTop: 15 }}
+              trackColor="#00c300"
+              value={this.state.estudante}
+              onValueChange={valorEstudante =>
+                this.setState({ estudante: valorEstudante })}
+            />
+          </View>
+
+          <TouchableOpacity
+            style={styles.botao}
+            onPress={this.enviarDados}
+            underlayColor="#000000"
+          >
+            <Text style={styles.botaoTexto}>Abrir Conta</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -154,25 +156,68 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "black",
-    marginTop: 30,
-    justifyContent: "center",
+    paddingTop: 20,
+    flex: 1
+  },
+  areaFormulario: {
+    flexDirection: "column",
+    margin: 10
+  },
+  bancoLogo: {
+    textAlign: "center",
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#FF7F00"
+  },
+  textoNome: {
+    fontSize: 17,
+    color: "#FF7F00",
+    fontWeight: "bold"
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 4,
+    borderColor: "#999999",
+    backgroundColor: "#EEEEEE",
+    color: "#000000",
+    height: 38,
+    padding: 10,
+    marginBottom: 5,
+    marginTop: 5
+  },
+  areaSexo: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingBottom: 5
+  },
+  pickerSexo: {
+    flex: 1
+  },
+  limiteArea: {
+    flexDirection: "row",
+    paddingBottom: 5
+  },
+  limiteTexto: {
+    color: "#FF0000",
+    fontSize: 17,
+    fontWeight: "bold",
+    paddingLeft: 5
+  },
+  areaEstudante: {
+    flexDirection: "row",
     alignItems: "center"
   },
-  viewDados: {
-    backgroundColor: "#FFFF",
-    width: "90%",
-    height: "85%",
-    marginTop: 30
+  botao: {
+    height: 35,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FF7F00",
+    borderRadius: 150,
+    margin: 20
   },
-  textInput: {
-    width: "90%",
-    height: "8%",
-    marginLeft: "5%",
-    marginTop: 5,
-    backgroundColor: "#DBDCDB",
-    padding: 10,
-    borderRadius: 5
+  botaoTexto: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#FFFFFF"
   }
 });
